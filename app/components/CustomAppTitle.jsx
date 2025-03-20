@@ -9,7 +9,6 @@ function CustomAppTitle() {
   const [selectedAPI, setSelectedAPI] = useState('getdatafromdocs')
 
   const handleAPIMenuChange = (apiKey) => {
-    console.log(apiKey)
     setSelectedAPI(apiKey)
   }
 

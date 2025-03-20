@@ -10,7 +10,6 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
 import { useAppContext } from '../contexts/AppContext'
 
 export default function APIMenu({ onAPIChange }) {
-  console.log('onAPIChange:', onAPIChange)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const { selectedAPI, setSelectedAPI } = useAppContext() // Use the context

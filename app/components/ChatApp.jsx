@@ -1,12 +1,24 @@
 // components/ChatApp.jsx
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppContext } from '../contexts/AppContext'
 import { Box } from '@mui/material'
 import ChatArea from './ChatArea'
 import QueryBox from './QueryBox'
 
 export default function ChatApp() {
+  useEffect(() => {
+    const stacks = document.querySelectorAll('.MuiStack-root')
+    if (stacks.length >= 7) {
+      const seventhStack = stacks[6] // Get the 7th element
+
+      // Check if it contains a nav tag
+      if (seventhStack.querySelector('nav')) {
+        seventhStack.style.display = 'none' // Hide it if it does
+      }
+    }
+  }, [])
+
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const { selectedAPI } = useAppContext()
