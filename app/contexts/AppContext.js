@@ -2,12 +2,12 @@
 import { createContext, useState, useContext } from 'react'
 
 export const AppContext = createContext({
-  selectedAPI: 'getdatafromdocs', // Default value
+  selectedAPI: 'getdatafrompdf', // Default value
   setSelectedAPI: () => {},
 })
 
 export const AppProvider = ({ children }) => {
-  const [selectedAPI, setSelectedAPI] = useState('getdatafromdocs') // Default value
+  const [selectedAPI, setSelectedAPI] = useState('getdatafrompdf') // Default value
 
   return <AppContext.Provider value={{ selectedAPI, setSelectedAPI }}>{children}</AppContext.Provider>
 }

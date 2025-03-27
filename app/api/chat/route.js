@@ -7,7 +7,7 @@ export async function POST(request) {
     const endpoint = searchParams.get('endpoint') // Get endpoint from query
 
     const apiKey = process.env.API_KEY || 'xrhv1OwFqVuCNxDvhpAwlirWavsXxUVkGDFeC1bG1pg'
-    let apiUrl = process.env.API_URL || 'https://chatbot-service-367407105478.asia-south1.run.app/'
+    let apiUrl = process.env.API_URL || 'https://chatbot-service-v2-367407105478.asia-south1.run.app/'
     if (endpoint) {
       apiUrl = apiUrl + endpoint // Append endpoint if provided
     }
@@ -22,7 +22,8 @@ export async function POST(request) {
     }
 
     const payload = {
-      question: question,
+      type: 'message',
+      text: question,
     }
 
     console.log('Request Payload:', payload)

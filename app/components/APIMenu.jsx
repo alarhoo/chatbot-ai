@@ -5,19 +5,29 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import QueryStatsIcon from '@mui/icons-material/QueryStats'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import QueryStatsIcon from '@mui/icons-material/QueryStats'
+import ImageSearchIcon from '@mui/icons-material/ImageSearch'
 import { useAppContext } from '../contexts/AppContext'
 
 export default function APIMenu({ onAPIChange }) {
+  const [alignment, setAlignment] = React.useState('pdf')
+
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const { selectedAPI, setSelectedAPI } = useAppContext() // Use the context
 
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment)
+    setSelectedAPI(newAlignment)
+  }
+
   // API options with endpoints
   const apiOptions = [
     { key: 'getdatafrombigquery', label: 'Big Query', icon: <QueryStatsIcon fontSize='small' /> },
-    { key: 'getdatafromdocs', label: 'PDF Docs', icon: <PictureAsPdfIcon fontSize='small' /> },
+    { key: 'getdatafrompdf', label: 'PDF Docs', icon: <PictureAsPdfIcon fontSize='small' /> },
   ]
 
   // Default selected API
@@ -29,12 +39,11 @@ export default function APIMenu({ onAPIChange }) {
     debugger
     setSelectedAPI(option.key)
     setAnchorEl(null)
-    // onAPIChange(option.key) // Pass the selected API endpoint to the parent component
   }
 
   return (
     <div>
-      <Button
+      {/* <Button
         id='apimenu-button'
         aria-controls={open ? 'api-menu' : undefined}
         aria-haspopup='true'
@@ -62,7 +71,18 @@ export default function APIMenu({ onAPIChange }) {
             {option.label}
           </MenuItem>
         ))}
-      </Menu>
+      </Menu> */}
+      <ToggleButtonGroup value={alignment} exclusive onChange={handleAlignment} aria-label='text alignment'>
+        <ToggleButton value='getdatafrompdf' aria-label='PDF'>
+          <PictureAsPdfIcon />
+        </ToggleButton>
+        <ToggleButton value='getdatafrombigquery' aria-label='Big Query'>
+          <QueryStatsIcon />
+        </ToggleButton>
+        <ToggleButton value='getdatafromimage' aria-label='Image Query'>
+          <ImageSearchIcon />
+        </ToggleButton>
+      </ToggleButtonGroup>
     </div>
   )
 }

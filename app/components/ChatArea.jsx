@@ -13,6 +13,7 @@ export default function ChatArea({ messages }) {
 
   return (
     <Box ref={chatRef} flex={1} overflow='auto' display='flex' flexDirection='column' gap={1} p={2} height='100%'>
+      <Typography className='gradient-text'>Hi there, how can we help you?</Typography>
       {messages.map((msg, index) => (
         <Paper
           key={index}

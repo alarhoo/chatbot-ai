@@ -1,3 +1,12 @@
 /* .MuiStack-root.mui-nen11g-MuiStack-root {
   display: none;
 } */
+
+.gradient-text {
+  background: linear-gradient(to right, #833ab4, #fd1d1d, #fcb045);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 2rem;
+  font-weight: bold;
+  padding-bottom: 20px;
+}

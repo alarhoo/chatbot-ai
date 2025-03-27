@@ -35,7 +35,8 @@ export default function ChatApp() {
       })
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
       const data = await response.json()
-      setMessages((prev) => [...prev, { text: data.response || 'No response received', type: 'bot' }])
+      console.log(data)
+      setMessages((prev) => [...prev, { text: data.text || 'No response received', type: 'bot' }])
     } catch (error) {
       console.error('Error sending query:', error)
       setMessages((prev) => [...prev, { text: 'Error: Unable to fetch response', type: 'error' }])
