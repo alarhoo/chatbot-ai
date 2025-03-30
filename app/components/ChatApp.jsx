@@ -23,8 +23,9 @@ export default function ChatApp() {
   const [isLoading, setIsLoading] = useState(false)
   const { selectedAPI } = useAppContext()
 
-  const handleSendQuery = async (query) => {
-    setMessages((prev) => [...prev, { text: query, type: 'user' }])
+  const handleSendQuery = async (query, image) => {
+    // Add user's message (with text and/or image)
+    setMessages((prev) => [...prev, { text: query, type: 'user', image }])
     setIsLoading(true)
 
     try {
@@ -45,11 +46,15 @@ export default function ChatApp() {
     }
   }
 
+  const clearChat = () => {
+    setMessages([])
+  }
+
   return (
     <>
       <Box display='flex' flexDirection='column' height='100%'>
         <ChatArea messages={messages} />
-        <QueryBox onSend={handleSendQuery} isLoading={isLoading} />
+        <QueryBox onSend={handleSendQuery} isLoading={isLoading} onNewChat={clearChat} />
       </Box>
     </>
   )

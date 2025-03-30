@@ -17,7 +17,7 @@ function CustomAppTitle() {
       <SmartToySharpIcon fontSize='small' color='primary' />
       {/* <Typography variant='h6'>Bulerez Chatbot</Typography> */}
       <Chip size='small' label='BETA' color='info' />
-      <APIMenu onAPIChange={handleAPIMenuChange} />
+      {/* <APIMenu onAPIChange={handleAPIMenuChange} /> */}
     </Stack>
   )
 }

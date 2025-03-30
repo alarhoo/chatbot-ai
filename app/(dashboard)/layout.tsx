@@ -7,6 +7,7 @@ import SidebarFooter from '../components/SidebarFooter'
 export default function Layout(props: { children: React.ReactNode }) {
   return (
     <DashboardLayout
+      defaultSidebarCollapsed
       slots={{
         appTitle: CustomAppTitle,
         sidebarFooter: SidebarFooter,
