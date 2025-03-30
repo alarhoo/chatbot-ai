@@ -55,7 +55,7 @@ export default function ChatArea({ messages }) {
             borderRadius: 2,
             border: msg.type === 'error' ? '2px solid red' : 'none',
             alignSelf: msg.type === 'user' ? 'flex-end' : 'flex-start',
-            maxWidth: '70%',
+            maxWidth: { xs: '100%', sm: '80%', md: '70%' }, // Full width on mobile
             display: 'flex',
             flexDirection: 'column',
             gap: 1,
@@ -69,16 +69,15 @@ export default function ChatArea({ messages }) {
                 position: 'relative',
                 borderRadius: 2,
                 overflow: 'hidden',
-                marginBottom: msg.text ? 1 : 0, // Adds spacing if text is present
+                marginBottom: msg.text ? 1 : 0,
               }}
             >
-              {' '}
               <Image
                 src={msg.image}
                 alt='Uploaded'
                 width={200}
                 height={200}
-                unoptimized // Necessary for data URLs
+                unoptimized
                 style={{ objectFit: 'cover', borderRadius: '8px' }}
               />
             </Box>

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { TextField, IconButton, Box, Button, Popover } from '@mui/material'
+import { TextField, IconButton, Box, Button, Popover, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import SendIcon from '@mui/icons-material/Send'
 import ImageIcon from '@mui/icons-material/Image'
@@ -13,8 +13,9 @@ import APIMenu from './APIMenu'
 export default function QueryBox({ onSend, isLoading, onNewChat }) {
   const [query, setQuery] = useState('')
   const [image, setImage] = useState(null)
-  const [anchorEl, setAnchorEl] = useState(null) // For image popover
+  const [anchorEl, setAnchorEl] = useState(null)
   const { setSelectedAPI, chatNavigation, setChatNavigation } = useAppContext()
+  const isMobile = useMediaQuery('(max-width:600px)')
 
   const handleSend = () => {
     if (query.trim() || image) {
@@ -57,11 +58,10 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
 
   const handleNewChat = () => {
     const newChat = {
-      segment: `chat-${Date.now()}`, // Unique ID
+      segment: `chat-${Date.now()}`,
       title: `Chat ${chatNavigation.length + 1}`,
       icon: <ChatIcon />,
     }
-
     setChatNavigation([...chatNavigation, newChat])
   }
 
@@ -70,18 +70,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
   }
 
   return (
-    <Box
-      display='flex'
-      flexDirection='column'
-      gap={1}
-      p={1}
-      borderRadius={2}
-      boxShadow={1}
-      position='sticky'
-      bottom={0}
-      width='100%'
-      bgcolor='white'
-    >
+    <Box display='flex' flexDirection='column' gap={1} p={1} borderRadius={2} boxShadow={1} bgcolor='white'>
       <Box display='flex' alignItems='center' gap={1} width='100%'>
         <TextField
           fullWidth
@@ -96,9 +85,9 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           sx={{ flex: 1 }}
         />
         {isLoading ? (
-          <Button loading>loading...</Button>
+          <Button disabled>Loading...</Button>
         ) : (
-          <IconButton onClick={handleSend} color='primary' disabled={isLoading || !query.trim()}>
+          <IconButton onClick={handleSend} color='primary' disabled={!query.trim()}>
             <SendIcon />
           </IconButton>
         )}
@@ -118,7 +107,6 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           onClick={handleImageClick}
         >
           <Image src={image} alt='Reference' layout='fill' objectFit='cover' />
-          {/* Remove Image Button */}
           <IconButton
             size='small'
             sx={{
@@ -142,7 +130,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
 
       <Box display='flex' alignItems='center' gap={2} width='100%'>
         <Button onClick={onNewChat} variant='outlined' startIcon={<AddIcon />} disabled={isLoading}>
-          New Chat
+          {!isMobile && 'New Chat'}
         </Button>
 
         <input
@@ -154,26 +142,19 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
         />
         <label htmlFor='image-upload'>
           <Button component='span' variant='outlined' startIcon={<ImageIcon />} disabled={isLoading}>
-            Attach Image
+            {!isMobile && 'Attach Image'}
           </Button>
         </label>
 
         <APIMenu onAPIChange={handleAPIMenuChange} />
       </Box>
 
-      {/* Popover to show full image */}
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClosePopover}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'center',
-        }}
+        anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'center' }}
       >
         {image && (
           <Box p={2}>
