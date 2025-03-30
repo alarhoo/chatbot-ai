@@ -1,10 +1,11 @@
 'use client'
 import { useState } from 'react'
-import { TextField, IconButton, Box, Button } from '@mui/material'
+import { TextField, IconButton, Box, Button, Popover } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import SendIcon from '@mui/icons-material/Send'
 import ImageIcon from '@mui/icons-material/Image'
 import ChatIcon from '@mui/icons-material/Chat'
+import CloseIcon from '@mui/icons-material/Close'
 import Image from 'next/image'
 import { useAppContext } from '../contexts/AppContext'
 import APIMenu from './APIMenu'
@@ -12,6 +13,7 @@ import APIMenu from './APIMenu'
 export default function QueryBox({ onSend, isLoading, onNewChat }) {
   const [query, setQuery] = useState('')
   const [image, setImage] = useState(null)
+  const [anchorEl, setAnchorEl] = useState(null) // For image popover
   const { setSelectedAPI, chatNavigation, setChatNavigation } = useAppContext()
 
   const handleSend = () => {
@@ -39,6 +41,18 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
       setSelectedAPI('getdatafromimage')
       reader.readAsDataURL(file)
     }
+  }
+
+  const handleImageClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClosePopover = () => {
+    setAnchorEl(null)
+  }
+
+  const handleRemoveImage = () => {
+    setImage(null)
   }
 
   const handleNewChat = () => {
@@ -90,6 +104,42 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
         )}
       </Box>
 
+      {image && (
+        <Box
+          sx={{
+            width: 60,
+            height: 60,
+            position: 'relative',
+            borderRadius: 1,
+            overflow: 'hidden',
+            cursor: 'pointer',
+            border: '1px solid #ddd',
+          }}
+          onClick={handleImageClick}
+        >
+          <Image src={image} alt='Reference' layout='fill' objectFit='cover' />
+          {/* Remove Image Button */}
+          <IconButton
+            size='small'
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              backgroundColor: 'rgba(0,0,0,0.6)',
+              color: 'white',
+              borderRadius: '50%',
+              p: 0.5,
+            }}
+            onClick={(e) => {
+              e.stopPropagation()
+              handleRemoveImage()
+            }}
+          >
+            <CloseIcon fontSize='small' />
+          </IconButton>
+        </Box>
+      )}
+
       <Box display='flex' alignItems='center' gap={2} width='100%'>
         <Button onClick={onNewChat} variant='outlined' startIcon={<AddIcon />} disabled={isLoading}>
           New Chat
@@ -110,6 +160,27 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
 
         <APIMenu onAPIChange={handleAPIMenuChange} />
       </Box>
+
+      {/* Popover to show full image */}
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+      >
+        {image && (
+          <Box p={2}>
+            <Image src={image} alt='Preview' width={400} height={400} />
+          </Box>
+        )}
+      </Popover>
     </Box>
   )
 }
