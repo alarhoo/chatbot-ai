@@ -28,6 +28,9 @@ export async function POST(request) {
 
     console.log('Request Payload:', payload)
 
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 60000) // 60 seconds (1 minute)
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -35,7 +38,10 @@ export async function POST(request) {
         'x-api-key': apiKey,
       },
       body: JSON.stringify(payload),
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       console.error('API request failed:', response.status, response.statusText)
@@ -53,7 +59,11 @@ export async function POST(request) {
     console.log('API Response:', data)
     return NextResponse.json(data)
   } catch (error) {
+    if (error.name === 'AbortError') {
+      console.error('API request timed out (1 minute).')
+      return NextResponse.json({ message: 'API request timed out', error: error }, { status: 504 })
+    }
     console.error('An unexpected error occurred:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ message: 'Internal server error', error: error }, { status: 500 })
   }
 }
