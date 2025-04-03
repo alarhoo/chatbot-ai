@@ -2,6 +2,9 @@
 import { useEffect, useRef } from 'react'
 import { Box, Paper, Typography, CircularProgress, Link } from '@mui/material'
 import Image from 'next/image'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { atelierEstuaryLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+// import 'prismjs/components/prism-sql'
 
 export default function ChatArea({ messages, isLoading }) {
   const chatRef = useRef(null)
@@ -94,7 +97,9 @@ export default function ChatArea({ messages, isLoading }) {
                 {msg.footnote.title}:
               </Typography>
               {msg.footnote.title === 'Generated SQL' ? (
-                <Typography style={{ whiteSpace: 'pre-line' }}>{msg.footnote.content}</Typography>
+                <SyntaxHighlighter language='sql' style={atelierEstuaryLight} wrapLongLines={true}>
+                  {msg.footnote.content}
+                </SyntaxHighlighter>
               ) : (
                 <Box display='flex' flexWrap='wrap' gap={0.5}>
                   {msg.footnote.content.map((doc, docIndex) => (
