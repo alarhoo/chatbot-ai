@@ -52,7 +52,12 @@ export default function ChatApp() {
 
   return (
     <Box display='flex' flexDirection='column' height='100%' className='chat-app'>
-      <ChatArea className='chat-area' messages={messages} sx={{ flexGrow: 1, overflowY: 'auto' }} />
+      <ChatArea
+        className='chat-area'
+        isLoading={isLoading}
+        messages={messages}
+        sx={{ flexGrow: 1, overflowY: 'auto' }}
+      />
       <Box sx={{ position: 'sticky', bottom: 0, width: '100%' }}>
         <QueryBox onSend={handleSendQuery} isLoading={isLoading} onNewChat={clearChat} />
       </Box>

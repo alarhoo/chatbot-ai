@@ -4,9 +4,8 @@ import { Box, Paper, Typography, CircularProgress } from '@mui/material'
 import Image from 'next/image'
 import { useAppContext } from '../contexts/AppContext'
 
-export default function ChatArea({ messages }) {
+export default function ChatArea({ messages, isLoading }) {
   const chatRef = useRef(null)
-  const { isLoading } = useAppContext()
 
   useEffect(() => {
     if (chatRef.current) {

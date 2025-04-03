@@ -85,7 +85,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           sx={{ flex: 1 }}
         />
         {isLoading ? (
-          <Button disabled>Loading...</Button>
+          <Button loading>Loading...</Button>
         ) : (
           <IconButton onClick={handleSend} color='primary' disabled={!query.trim()}>
             <SendIcon />
