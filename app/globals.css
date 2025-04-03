@@ -10,3 +10,19 @@
   font-weight: bold;
   padding-bottom: 20px;
 }
+
+/* Global scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px; /* Thin scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}

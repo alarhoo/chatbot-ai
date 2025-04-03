@@ -37,7 +37,31 @@ export default function ChatApp() {
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
       const data = await response.json()
       console.log(data)
-      setMessages((prev) => [...prev, { text: data.text || 'No response received', type: 'bot' }])
+
+      let footnote = null
+      if (selectedAPI === 'getdatafromsql' && data.debug_info && data.debug_info.generated_sql) {
+        footnote = { title: 'Generated SQL', content: data.debug_info.generated_sql }
+      } else if (data.source_documents && data.source_documents.length > 0) {
+        // Filter out duplicate source documents based on gcs_link
+        const uniqueSourceDocuments = []
+        const seenLinks = new Set()
+        data.source_documents.forEach((doc) => {
+          if (!seenLinks.has(doc.gcs_link)) {
+            uniqueSourceDocuments.push(doc)
+            seenLinks.add(doc.gcs_link)
+          }
+        })
+        footnote = { title: 'Source Documents', content: uniqueSourceDocuments }
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: data.text || 'No response received',
+          type: 'bot',
+          footnote: footnote,
+        },
+      ])
     } catch (error) {
       console.error('Error sending query:', error)
       setMessages((prev) => [...prev, { text: 'Error: Unable to fetch response', type: 'error' }])

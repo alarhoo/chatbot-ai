@@ -26,7 +26,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
   }
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && !isLoading) {
       event.preventDefault()
       handleSend()
     }
@@ -141,7 +141,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           onChange={handleImageUpload}
         />
         <label htmlFor='image-upload'>
-          <Button component='span' variant='outlined' startIcon={<ImageIcon />} disabled={isLoading}>
+          <Button component='span' variant='outlined' startIcon={<ImageIcon />}>
             {!isMobile && 'Attach Image'}
           </Button>
         </label>

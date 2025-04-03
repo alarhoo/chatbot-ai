@@ -1,20 +1,22 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { Box, Paper, Typography, CircularProgress } from '@mui/material'
+import { Box, Paper, Typography, CircularProgress, Link } from '@mui/material'
 import Image from 'next/image'
-import { useAppContext } from '../contexts/AppContext'
 
 export default function ChatArea({ messages, isLoading }) {
   const chatRef = useRef(null)
 
   useEffect(() => {
     if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight
+      setTimeout(() => {
+        console.log('Scrolling to:', chatRef.current.scrollHeight)
+        chatRef.current.scrollTop = chatRef.current.scrollHeight
+      }, 10)
     }
   }, [messages, isLoading])
 
   return (
-    <Box ref={chatRef} flex={1} overflow='auto' display='flex' flexDirection='column' gap={1} p={2} height='100%'>
+    <Box ref={chatRef} flex={1} display='flex' flexDirection='column' gap={1} p={2} height='100%'>
       <Typography variant='h1' className='gradient-text' textAlign='center'>
         Welcome to our AI-powered assistant!
       </Typography>
@@ -44,45 +46,72 @@ export default function ChatArea({ messages, isLoading }) {
       </Box>
 
       {messages.map((msg, index) => (
-        <Paper
-          key={index}
-          elevation={0}
-          sx={{
-            p: 2,
-            bgcolor: msg.type === 'user' ? '#3498db' : msg.type === 'bot' ? '#2ecc71' : '#e74c3c',
-            color: 'white',
-            borderRadius: 2,
-            border: msg.type === 'error' ? '2px solid red' : 'none',
-            alignSelf: msg.type === 'user' ? 'flex-end' : 'flex-start',
-            maxWidth: { xs: '100%', sm: '80%', md: '70%' }, // Full width on mobile
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-          }}
-        >
-          {msg.image && (
+        <Box key={index} display='flex' flexDirection='column' gap={1}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2,
+              bgcolor: msg.type === 'user' ? '#3498db' : msg.type === 'bot' ? '#2ecc71' : '#e74c3c',
+              color: 'white',
+              borderRadius: 2,
+              border: msg.type === 'error' ? '2px solid red' : 'none',
+              alignSelf: msg.type === 'user' ? 'flex-end' : 'flex-start',
+              maxWidth: { xs: '100%', sm: '100%', md: '90%' },
+            }}
+          >
+            {msg.image && (
+              <Box
+                sx={{
+                  width: 200,
+                  height: 200,
+                  position: 'relative',
+                  borderRadius: 2,
+                  overflow: 'hidden',
+                  marginBottom: msg.text ? 1 : 0,
+                }}
+              >
+                <Image
+                  src={msg.image}
+                  alt='Uploaded'
+                  width={200}
+                  height={200}
+                  unoptimized
+                  style={{ objectFit: 'cover', borderRadius: '8px' }}
+                />
+              </Box>
+            )}
+            {msg.text && <Typography style={{ whiteSpace: 'pre-line' }}>{msg.text.replace(/\\n/g, '\n')}</Typography>}
+          </Paper>
+
+          {msg.footnote && (
             <Box
-              sx={{
-                width: 200,
-                height: 200,
-                position: 'relative',
-                borderRadius: 2,
-                overflow: 'hidden',
-                marginBottom: msg.text ? 1 : 0,
-              }}
+              mt={1}
+              ml={msg.type === 'user' ? 'auto' : 0}
+              mr={msg.type === 'user' ? 0 : 'auto'}
+              maxWidth={{ xs: '100%', sm: '80%', md: '70%' }}
             >
-              <Image
-                src={msg.image}
-                alt='Uploaded'
-                width={200}
-                height={200}
-                unoptimized
-                style={{ objectFit: 'cover', borderRadius: '8px' }}
-              />
+              <Typography variant='subtitle2' fontWeight='bold'>
+                {msg.footnote.title}:
+              </Typography>
+              {msg.footnote.title === 'Generated SQL' ? (
+                <Typography style={{ whiteSpace: 'pre-line' }}>{msg.footnote.content}</Typography>
+              ) : (
+                <Box display='flex' flexWrap='wrap' gap={0.5}>
+                  {msg.footnote.content.map((doc, docIndex) => (
+                    <Box key={docIndex} display='inline'>
+                      <Link href={doc.gcs_link || '#'} target='_blank' rel='noopener noreferrer' color='inherit'>
+                        {doc.metadata && doc.metadata.source
+                          ? doc.metadata.source.split('/').pop()
+                          : `Document ${docIndex + 1}`}
+                      </Link>
+                      {docIndex < msg.footnote.content.length - 1 && ', '}
+                    </Box>
+                  ))}
+                </Box>
+              )}
             </Box>
           )}
-          {msg.text && <Typography>{msg.text}</Typography>}
-        </Paper>
+        </Box>
       ))}
 
       {isLoading && (
