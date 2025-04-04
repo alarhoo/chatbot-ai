@@ -11,7 +11,7 @@ const theme = createTheme({
   cssVariables: {
     colorSchemeSelector: 'data-toolpad-color-scheme',
   },
-  colorSchemes: { light: true, dark: false },
+  colorSchemes: { light: true, dark: true },
   palette: {
     mode: 'light',
     primary: {
