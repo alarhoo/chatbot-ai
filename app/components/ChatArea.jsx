@@ -1,16 +1,16 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { Box, Paper, Typography, CircularProgress, Link, Avatar, useTheme } from '@mui/material'
+import { Box, Paper, Typography, useTheme } from '@mui/material'
 import Image from 'next/image'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 import botImage from '../public/img/boltz.png'
 import AnimatedText from './AnimatedText'
 import TypingDots from './TypingDots'
+import { useAppContext } from '../contexts/AppContext'
 
 export default function ChatArea({ messages, isLoading }) {
   const chatRef = useRef(null)
   const theme = useTheme()
+  const { selectedAPI, setSelectedAPI } = useAppContext() // Access context for setting selected API
 
   useEffect(() => {
     if (chatRef.current) {
@@ -20,6 +20,17 @@ export default function ChatArea({ messages, isLoading }) {
       }, 10)
     }
   }, [messages, isLoading])
+
+  // Glow styles for selected API
+  const getGlowStyle = (apiKey) => ({
+    border: selectedAPI === apiKey ? '2px solid' : 'none',
+    borderColor: theme.palette.primary.main,
+    transition: 'all 0.3s ease',
+  })
+
+  const handlePaperClick = (apiKey) => {
+    setSelectedAPI(apiKey) // Set the selected API when a Paper is clicked
+  }
 
   return (
     <Box ref={chatRef} flex={1} display='flex' flexDirection='column' gap={1} p={1} height='100%' mb={5}>
@@ -38,21 +49,33 @@ export default function ChatArea({ messages, isLoading }) {
           sx={{ display: { xs: 'none', sm: 'none', md: 'flex' } }}
           mb={2}
         >
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+          {/* Clickable Papers */}
+          <Paper
+            elevation={2}
+            sx={{ p: 2, width: '30%', textAlign: 'center', cursor: 'pointer', ...getGlowStyle('getdatafrompdf') }}
+            onClick={() => handlePaperClick('getdatafrompdf')}
+          >
             <Typography variant='h6'>Get Data from PDF</Typography>
             <Typography variant='body2'>Extract structured data from PDF documents efficiently.</Typography>
           </Paper>
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+          <Paper
+            sx={{ p: 2, width: '30%', textAlign: 'center', cursor: 'pointer', ...getGlowStyle('getdatafromsql') }}
+            onClick={() => handlePaperClick('getdatafromsql')}
+          >
             <Typography variant='h6'>Get Data from BigQuery</Typography>
             <Typography variant='body2'>Fetch and analyze large datasets from Google BigQuery.</Typography>
           </Paper>
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+          <Paper
+            sx={{ p: 2, width: '30%', textAlign: 'center', cursor: 'pointer', ...getGlowStyle('getdatafromimage') }}
+            onClick={() => handlePaperClick('getdatafromimage')}
+          >
             <Typography variant='h6'>Get Data from Image</Typography>
             <Typography variant='body2'>Extract text and information from images using OCR.</Typography>
           </Paper>
         </Box>
       </Paper>
 
+      {/* Messages */}
       {messages.map((msg, index) => (
         <Box key={index} display='flex' flexDirection='row' alignItems='flex-start' gap={1}>
           {msg.type === 'bot' && (
@@ -105,49 +128,14 @@ export default function ChatArea({ messages, isLoading }) {
                 msg.text && <Typography style={{ whiteSpace: 'pre-line' }}>{msg.text.replace(/\\n/g, '\n')}</Typography>
               )}
             </Paper>
-
-            {msg.footnote && (
-              <Box
-                mt={1}
-                ml={msg.type === 'user' ? 'auto' : 0}
-                mr={msg.type === 'user' ? 0 : 'auto'}
-                maxWidth={{ xs: '100%', sm: '80%', md: '70%' }}
-              >
-                <Typography variant='subtitle2' fontWeight='bold'>
-                  {msg.footnote.title}:
-                </Typography>
-                {msg.footnote.title === 'Generated SQL' ? (
-                  <SyntaxHighlighter language='sql' style={tomorrow} wrapLongLines={true}>
-                    {msg.footnote.content}
-                  </SyntaxHighlighter>
-                ) : (
-                  <Box display='flex' flexWrap='wrap' gap={0.5}>
-                    {msg.footnote.content.map((doc, docIndex) => (
-                      <Box key={docIndex} display='inline'>
-                        <Link href={doc.gcs_link || '#'} target='_blank' rel='noopener noreferrer' color='inherit'>
-                          {doc.metadata && doc.metadata.source
-                            ? doc.metadata.source.split('/').pop()
-                            : `Document ${docIndex + 1}`}
-                        </Link>
-                        {docIndex < msg.footnote.content.length - 1 && ', '}
-                      </Box>
-                    ))}
-                  </Box>
-                )}
-              </Box>
-            )}
           </Box>
-          {/* {msg.type === 'user' && <Box width={40} height={40} />} */}
         </Box>
       ))}
 
+      {/* Loading Indicator */}
       {isLoading && (
         <Box display='flex' alignItems='center' justifyContent='flex-start' gap={1} p={2}>
           <TypingDots />
-          {/* <CircularProgress size={20} color='secondary' />
-          <Typography variant='body2' color='textSecondary'>
-            Querying...
-          </Typography> */}
         </Box>
       )}
     </Box>

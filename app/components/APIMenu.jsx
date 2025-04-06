@@ -33,7 +33,7 @@ export default function APIMenu({ onAPIChange }) {
 
   return (
     <div>
-      <ToggleButtonGroup value={menu} exclusive onChange={handleApiMenu} size='small' aria-label='api menu'>
+      <ToggleButtonGroup value={selectedAPI} exclusive onChange={handleApiMenu} size='small' aria-label='api menu'>
         <Tooltip title='get data from pdf' arrow>
           <ToggleButton value='getdatafrompdf' aria-label='PDF'>
             <PictureAsPdfIcon />
