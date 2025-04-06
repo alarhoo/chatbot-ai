@@ -32,19 +32,19 @@ const WelcomeBox = () => {
           sx={{ display: { xs: 'none', sm: 'none', md: 'flex' } }}
           mb={2}
         >
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
+          <Paper className='hover-glow' sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
             <Typography fontWeight='bold'>Get Data from PDF</Typography>
             <Typography variant='body2' color='text.secondary'>
               Extract structured data from PDF documents efficiently.
             </Typography>
           </Paper>
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
+          <Paper className='hover-glow' sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
             <Typography fontWeight='bold'>Get Data from BigQuery</Typography>
             <Typography variant='body2' color='text.secondary'>
               Fetch and analyze large datasets from Google BigQuery.
             </Typography>
           </Paper>
-          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
+          <Paper className='hover-glow' sx={{ p: 2, width: '30%', textAlign: 'center' }} elevation={2}>
             <Typography fontWeight='bold'>Get Data from Image</Typography>
             <Typography variant='body2' color='text.secondary'>
               Extract text and information from images using OCR.

@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { Box, Paper, Typography, CircularProgress, Link, Avatar } from '@mui/material'
+import { Box, Paper, Typography, CircularProgress, Link, Avatar, useTheme } from '@mui/material'
 import Image from 'next/image'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/hljs'
@@ -10,6 +10,7 @@ import TypingDots from './TypingDots'
 
 export default function ChatArea({ messages, isLoading }) {
   const chatRef = useRef(null)
+  const theme = useTheme()
 
   useEffect(() => {
     if (chatRef.current) {
@@ -21,34 +22,36 @@ export default function ChatArea({ messages, isLoading }) {
   }, [messages, isLoading])
 
   return (
-    <Box ref={chatRef} flex={1} display='flex' flexDirection='column' gap={1} p={2} height='100%'>
-      <Typography variant='h1' className='gradient-text' textAlign='center'>
-        Welcome to our AI-powered assistant!
-      </Typography>
-      <Typography variant='h6' textAlign='center' mb={2}>
-        I can help you retrieve data from PDFs, BigQuery, and Images. Please select an option from the menu in query
-        box.
-      </Typography>
-      <Box
-        display='flex'
-        gap={2}
-        justifyContent='center'
-        sx={{ display: { xs: 'none', sm: 'none', md: 'flex' } }}
-        mb={2}
-      >
-        <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
-          <Typography variant='h6'>Get Data from PDF</Typography>
-          <Typography variant='body2'>Extract structured data from PDF documents efficiently.</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
-          <Typography variant='h6'>Get Data from BigQuery</Typography>
-          <Typography variant='body2'>Fetch and analyze large datasets from Google BigQuery.</Typography>
-        </Paper>
-        <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
-          <Typography variant='h6'>Get Data from Image</Typography>
-          <Typography variant='body2'>Extract text and information from images using OCR.</Typography>
-        </Paper>
-      </Box>
+    <Box ref={chatRef} flex={1} display='flex' flexDirection='column' gap={1} p={1} height='100%' mb={5}>
+      <Paper elevation={5} sx={{ p: 2, mb: 4, borderRadius: 2, width: '100%' }} className='animate__bounceIn'>
+        <Typography variant='h1' className='gradient-text' textAlign='center'>
+          Welcome to our AI-powered assistant!
+        </Typography>
+        <Typography variant='h6' textAlign='center' mb={2}>
+          I can help you retrieve data from PDFs, BigQuery, and Images. Please select an option from the menu in query
+          box.
+        </Typography>
+        <Box
+          display='flex'
+          gap={2}
+          justifyContent='center'
+          sx={{ display: { xs: 'none', sm: 'none', md: 'flex' } }}
+          mb={2}
+        >
+          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+            <Typography variant='h6'>Get Data from PDF</Typography>
+            <Typography variant='body2'>Extract structured data from PDF documents efficiently.</Typography>
+          </Paper>
+          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+            <Typography variant='h6'>Get Data from BigQuery</Typography>
+            <Typography variant='body2'>Fetch and analyze large datasets from Google BigQuery.</Typography>
+          </Paper>
+          <Paper sx={{ p: 2, width: '30%', textAlign: 'center' }}>
+            <Typography variant='h6'>Get Data from Image</Typography>
+            <Typography variant='body2'>Extract text and information from images using OCR.</Typography>
+          </Paper>
+        </Box>
+      </Paper>
 
       {messages.map((msg, index) => (
         <Box key={index} display='flex' flexDirection='row' alignItems='flex-start' gap={1}>
@@ -64,7 +67,7 @@ export default function ChatArea({ messages, isLoading }) {
           )}
           <Box flex={1} display='flex' flexDirection='column' gap={1}>
             <Paper
-              elevation={0}
+              elevation={msg.type === 'user' ? 3 : msg.type === 'bot' ? 4 : 3}
               sx={{
                 p: 2,
                 bgcolor: msg.type === 'user' ? '#3498db' : msg.type === 'bot' ? '#2ecc71' : '#e74c3c',
@@ -134,17 +137,17 @@ export default function ChatArea({ messages, isLoading }) {
               </Box>
             )}
           </Box>
-          {msg.type === 'user' && <Box width={40} height={40} />}
+          {/* {msg.type === 'user' && <Box width={40} height={40} />} */}
         </Box>
       ))}
 
       {isLoading && (
         <Box display='flex' alignItems='center' justifyContent='flex-start' gap={1} p={2}>
           <TypingDots />
-          <CircularProgress size={20} color='secondary' />
+          {/* <CircularProgress size={20} color='secondary' />
           <Typography variant='body2' color='textSecondary'>
             Querying...
-          </Typography>
+          </Typography> */}
         </Box>
       )}
     </Box>

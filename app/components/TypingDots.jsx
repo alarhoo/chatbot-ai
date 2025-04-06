@@ -12,6 +12,7 @@ const blink = keyframes`
 
 const Dot = styled(Typography)(({ theme }) => ({
   fontSize: '1.5em',
+  fontWeight: 'bold',
   lineHeight: '1em',
   marginRight: theme.spacing(1),
   '&:nth-child(1)': {
@@ -31,9 +32,6 @@ function TypingDots() {
       <Dot>.</Dot>
       <Dot>.</Dot>
       <Dot>.</Dot>
-      <Typography variant='body2' color='textSecondary' ml={1}>
-        Typing...
-      </Typography>
     </Box>
   )
 }

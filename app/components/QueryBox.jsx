@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { TextField, IconButton, Box, Button, Popover, useMediaQuery } from '@mui/material'
+import { TextField, IconButton, Box, Button, Paper, Popover, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import SendIcon from '@mui/icons-material/Send'
 import ImageIcon from '@mui/icons-material/Image'
@@ -70,7 +70,16 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
   }
 
   return (
-    <Box display='flex' flexDirection='column' gap={1} p={1} borderRadius={2} boxShadow={1} bgcolor='white'>
+    <Paper
+      elevation={3}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        p: 1,
+        borderRadius: 2,
+      }}
+    >
       <Box display='flex' alignItems='center' gap={1} width='100%'>
         <TextField
           fullWidth
@@ -129,7 +138,13 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
       )}
 
       <Box display='flex' alignItems='center' gap={2} width='100%'>
-        <Button onClick={onNewChat} variant='outlined' startIcon={<AddIcon />} disabled={isLoading}>
+        <Button
+          onClick={onNewChat}
+          variant='outlined'
+          startIcon={<AddIcon />}
+          disabled={isLoading}
+          sx={{ fontWeight: 'bold' }}
+        >
           {!isMobile && 'New Chat'}
         </Button>
 
@@ -141,7 +156,7 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           onChange={handleImageUpload}
         />
         <label htmlFor='image-upload'>
-          <Button component='span' variant='outlined' startIcon={<ImageIcon />}>
+          <Button component='span' variant='outlined' startIcon={<ImageIcon />} sx={{ fontWeight: 'bold' }}>
             {!isMobile && 'Attach Image'}
           </Button>
         </label>
@@ -162,6 +177,6 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           </Box>
         )}
       </Popover>
-    </Box>
+    </Paper>
   )
 }

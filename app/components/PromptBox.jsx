@@ -3,12 +3,37 @@ import { Box, IconButton, InputBase, Typography } from '@mui/material'
 import ProIcon from '@mui/icons-material/StarBorder' // Example icon
 import FollowUpIcon from '@mui/icons-material/ChatBubbleOutline' // Example icon
 import AttachmentIcon from '@mui/icons-material/AttachFile'
-import SendIcon from '@mui/icons-material/ArrowUpward'
+import SendIcon from '@mui/icons-material/Send'
 import { useTheme } from '@mui/material/styles'
 import { useAppContext } from '../contexts/AppContext'
 import ModelMenu from './ModelMenu'
 
+const MAX_QUERY_LENGTH = 3
+
+const variantBackgroundColor = {
+  filled: 'primary.main',
+}
+
+const variantColor = {
+  filled: 'white',
+}
+
+function MyIconButton({ variant, ...other }) {
+  return (
+    <IconButton
+      sx={{
+        backgroundColor: variantBackgroundColor[variant],
+        color: variantColor[variant],
+        '&:hover': { backgroundColor: variantBackgroundColor[variant] },
+      }}
+      {...other}
+    />
+  )
+}
+
 function InputComponent() {
+  const [query, setQuery] = useState('')
+
   const theme = useTheme()
   const inputRef = useRef(null)
   const [isMultiline, setIsMultiline] = useState(false)
@@ -27,12 +52,13 @@ function InputComponent() {
     }
   }, [theme])
 
-  const handleInputChange = () => {
-    if (inputRef.current) {
-      // Force a re-check after input changes
-      setTimeout(() => {
-        setIsMultiline(inputRef.current.offsetHeight > theme.spacing(3)) // Adjust threshold
-      }, 0)
+  const handleInputChange = (value) => {
+    setQuery(value)
+    console.log(value.length)
+    if (value.length > MAX_QUERY_LENGTH) {
+      setIsMultiline(true)
+    } else {
+      setIsMultiline(false)
     }
   }
 
@@ -44,37 +70,48 @@ function InputComponent() {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: isMultiline ? 'column' : 'row',
+        flexDirection: isMultiline ? 'column-reverse' : 'row',
         alignItems: isMultiline ? 'flex-start' : 'center',
         padding: theme.spacing(1),
         borderRadius: theme.shape.borderRadius,
         border: `1px solid ${theme.palette.divider}`,
       }}
     >
-      <IconButton size='small'>
-        <AttachmentIcon />
-      </IconButton>
-
-      <ModelMenu onAPIChange={handleAPIMenuChange} />
-
-      <InputBase
-        inputRef={inputRef}
-        placeholder='Type your message...'
-        inputProps={{ 'aria-label': 'input message' }}
-        multiline
-        minRows={1}
-        maxRows={4}
-        onChange={handleInputChange}
-        sx={{
-          ml: theme.spacing(1),
-          flexGrow: 1,
-          mb: isMultiline ? theme.spacing(1) : 0,
-        }}
-      />
-      <Box sx={{ display: 'flex', flexDirection: isMultiline ? 'row' : 'column', alignItems: 'center' }} color='primary'>
-        <IconButton size='small' sx={{ ml: theme.spacing(1) }}>
-          <SendIcon />
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: isMultiline ? '100%' : 'auto' }}>
+        <IconButton size='small'>
+          <AttachmentIcon />
         </IconButton>
+        <ModelMenu onAPIChange={handleAPIMenuChange} />
+        <Box sx={{ flexGrow: 1 }} />
+        <MyIconButton
+          size='small'
+          variant='filled'
+          color='secondary'
+          sx={{ ml: theme.spacing(1), display: isMultiline ? 'inherit' : 'none' }}
+        >
+          <SendIcon />
+        </MyIconButton>
+      </Box>
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+        <InputBase
+          fullWidth
+          multiline
+          minRows={1}
+          maxRows={4}
+          inputRef={inputRef}
+          placeholder='Type your query...'
+          inputProps={{ 'aria-label': 'input message' }}
+          onChange={(e) => handleInputChange(e.target.value)}
+          sx={{
+            ml: theme.spacing(1),
+            mb: isMultiline ? theme.spacing(1) : 0,
+          }}
+        />
+
+        <MyIconButton size='small' variant='filled' color='secondary'>
+          <SendIcon />
+        </MyIconButton>
       </Box>
     </Box>
   )

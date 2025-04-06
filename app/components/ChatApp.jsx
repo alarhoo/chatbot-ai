@@ -80,9 +80,9 @@ export default function ChatApp() {
         className='chat-area'
         isLoading={isLoading}
         messages={messages}
-        sx={{ flexGrow: 1, overflowY: 'auto' }}
+        sx={{ flexGrow: 1, overflowY: 'auto', marginBottom: '40px' }}
       />
-      <Box sx={{ position: 'sticky', bottom: 0, width: '100%' }}>
+      <Box sx={{ position: 'sticky', bottom: 30, width: '100%' }}>
         <QueryBox onSend={handleSendQuery} isLoading={isLoading} onNewChat={clearChat} />
       </Box>
     </Box>

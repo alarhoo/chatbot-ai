@@ -42,7 +42,7 @@ function AnimatedText({ text }) {
       intervalRef.current = setInterval(() => {
         setDisplayText((prev) => prev + text[index])
         setIndex((prev) => prev + 1)
-      }, 20) // Adjust typing speed here
+      }, 2) // Adjust typing speed here
       return () => clearInterval(intervalRef.current)
     } else if (index >= text.length) {
       clearInterval(intervalRef.current)
