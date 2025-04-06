@@ -13,7 +13,7 @@ export default function Layout(props: { children: React.ReactNode }) {
         sidebarFooter: SidebarFooter,
       }}
     >
-      <PageContainer>{props.children}</PageContainer>
+      <PageContainer maxWidth='md'>{props.children}</PageContainer>
     </DashboardLayout>
   )
 }

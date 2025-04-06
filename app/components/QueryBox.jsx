@@ -139,11 +139,12 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
 
       <Box display='flex' alignItems='center' gap={2} width='100%'>
         <Button
+          size='small'
           onClick={onNewChat}
           variant='outlined'
           startIcon={<AddIcon />}
           disabled={isLoading}
-          sx={{ fontWeight: 'bold' }}
+          sx={{ fontWeight: 'bold', textTransform: 'none' }}
         >
           {!isMobile && 'New Chat'}
         </Button>
@@ -156,7 +157,13 @@ export default function QueryBox({ onSend, isLoading, onNewChat }) {
           onChange={handleImageUpload}
         />
         <label htmlFor='image-upload'>
-          <Button component='span' variant='outlined' startIcon={<ImageIcon />} sx={{ fontWeight: 'bold' }}>
+          <Button
+            size='small'
+            component='span'
+            variant='contained'
+            startIcon={<ImageIcon />}
+            sx={{ fontWeight: 'bold', textTransform: 'none' }}
+          >
             {!isMobile && 'Attach Image'}
           </Button>
         </label>
