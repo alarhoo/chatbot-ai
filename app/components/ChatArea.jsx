@@ -187,7 +187,7 @@ export default function ChatArea({ messages, isLoading, onRetry }) {
                         {docIndex < Math.min(3, msg.footnote.content.length) - 1 && ', '}
                       </Box>
                     ))}
-                    {msg.footnote.content.length > 3 && (
+                    {msg.footnote.content.length > 1 && (
                       <Link
                         sx={{ cursor: 'pointer', marginLeft: 1 }}
                         onClick={(event) => handleMoreClick(event, msg.footnote.content)}
