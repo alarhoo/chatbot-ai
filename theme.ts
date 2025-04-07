@@ -24,13 +24,6 @@ const theme = createTheme({
       default: '#f5f5f5',
       paper: '#fdf8f9',
     },
-    spacing: 4, // Adjust spacing scale for compact design
-    typography: {
-      fontSize: 12, // Reduce default font size
-      h1: { fontSize: '1.5rem' },
-      h2: { fontSize: '1.25rem' },
-      body1: { fontSize: '0.875rem' },
-    },
   },
 })
 
