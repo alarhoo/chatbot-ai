@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { Box, Paper, Typography, useTheme } from '@mui/material'
+import { Box, Paper, Link, Typography, useTheme } from '@mui/material'
 import Image from 'next/image'
 import botImage from '../public/img/boltz.png'
 import AnimatedText from './AnimatedText'
@@ -35,7 +35,17 @@ export default function ChatArea({ messages, isLoading }) {
   }
 
   return (
-    <Box ref={chatRef} flex={1} display='flex' flexDirection='column' gap={1} p={1} height='100%' mb={5}>
+    <Box
+      ref={chatRef}
+      flex={1}
+      display='flex'
+      flexDirection='column'
+      gap={1}
+      p={1}
+      height='100%'
+      mb={5}
+      sx={{ overflowY: 'auto' }}
+    >
       <Paper elevation={5} sx={{ p: 2, mb: 4, borderRadius: 2, width: '100%' }} className='animate__bounceIn'>
         <Typography variant='h1' className='gradient-text' textAlign='center'>
           Welcome to our AI-powered assistant!
