@@ -65,6 +65,7 @@ export default function ChatApp() {
             seenLinks.add(doc.gcs_link)
           }
         })
+        uniqueSourceDocuments.length = Math.min(uniqueSourceDocuments.length, 2)
         footnote = { title: 'Source Documents', content: uniqueSourceDocuments }
       }
 
