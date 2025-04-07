@@ -177,7 +177,7 @@ export default function ChatArea({ messages, isLoading, onRetry }) {
                   </SyntaxHighlighter>
                 ) : msg.footnote.title === 'Source Documents' ? (
                   <Box display='flex' flexWrap='wrap' gap={0.5} alignItems='center'>
-                    {msg.footnote.content.slice(0, 3).map((doc, docIndex) => (
+                    {msg.footnote.content.slice(0, 1).map((doc, docIndex) => (
                       <Box key={docIndex} display='inline'>
                         <Link href={doc.gcs_link || '#'} target='_blank' rel='noopener noreferrer' color='inherit'>
                           {doc.metadata && doc.metadata.source
