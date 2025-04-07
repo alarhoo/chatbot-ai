@@ -1,29 +1,37 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { Box, Paper, Link, Typography, useTheme } from '@mui/material'
+import { useEffect, useRef, useState } from 'react'
+import {
+  Box,
+  Paper,
+  Link,
+  Typography,
+  useTheme,
+  Popover,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+} from '@mui/material'
 import Image from 'next/image'
+import ReplayIcon from '@mui/icons-material/Replay'
 import botImage from '../public/img/boltz.png'
 import AnimatedText from './AnimatedText'
 import TypingDots from './TypingDots'
 import { useAppContext } from '../contexts/AppContext'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { atelierForestLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { atelierForestDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-export default function ChatArea({ messages, isLoading }) {
-  const chatRef = useRef(null)
+export default function ChatArea({ messages, isLoading, onRetry }) {
   const theme = useTheme()
-  const { selectedAPI, setSelectedAPI } = useAppContext() // Access context for setting selected API
+  const isDarkMode = theme.palette.mode === 'dark'
+  const syntaxStyle = isDarkMode ? atelierForestDark : atelierForestLight
 
-  useEffect(() => {
-    if (chatRef.current) {
-      setTimeout(() => {
-        console.log('Scrolling to:', chatRef.current.scrollHeight)
-        chatRef.current.scrollTop = chatRef.current.scrollHeight
-      }, 10)
-    }
-  }, [messages, isLoading])
+  const { selectedAPI, setSelectedAPI } = useAppContext()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [popoverContent, setPopoverContent] = useState([])
 
-  // Glow styles for selected API
   const getGlowStyle = (apiKey) => ({
     border: selectedAPI === apiKey ? '2px solid' : 'none',
     borderColor: theme.palette.primary.main,
@@ -31,21 +39,30 @@ export default function ChatArea({ messages, isLoading }) {
   })
 
   const handlePaperClick = (apiKey) => {
-    setSelectedAPI(apiKey) // Set the selected API when a Paper is clicked
+    setSelectedAPI(apiKey)
+  }
+
+  const handleMoreClick = (event, content) => {
+    setAnchorEl(event.currentTarget)
+    setPopoverContent(content)
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+    setPopoverContent([])
+  }
+
+  const open = Boolean(anchorEl)
+  const popoverId = open ? 'simple-popover' : undefined
+
+  const handleRetryClick = (message) => {
+    if (onRetry) {
+      onRetry()
+    }
   }
 
   return (
-    <Box
-      ref={chatRef}
-      flex={1}
-      display='flex'
-      flexDirection='column'
-      gap={1}
-      p={1}
-      height='100%'
-      mb={5}
-      sx={{ overflowY: 'auto' }}
-    >
+    <Box flex={1} display='flex' flexDirection='column' gap={1} p={1} height='100%' mb={5} sx={{ overflowY: 'auto' }}>
       <Paper elevation={5} sx={{ p: 2, mb: 4, borderRadius: 2, width: '100%' }} className='animate__bounceIn'>
         <Typography variant='h1' className='gradient-text' textAlign='center'>
           Welcome to our AI-powered assistant!
@@ -87,7 +104,6 @@ export default function ChatArea({ messages, isLoading }) {
         </Box>
       </Paper>
 
-      {/* Messages */}
       {messages.map((msg, index) => (
         <Box key={index} display='flex' flexDirection='row' alignItems='flex-start' gap={1}>
           {msg.type === 'bot' && (
@@ -100,7 +116,7 @@ export default function ChatArea({ messages, isLoading }) {
               style={{ objectFit: 'cover', borderRadius: '8px' }}
             />
           )}
-          <Box flex={1} display='flex' flexDirection='column' gap={1}>
+          <Box flex={1} display='flex' flexDirection={msg.type === 'error' ? 'row' : 'column'} gap={1}>
             <Paper
               elevation={msg.type === 'user' ? 3 : msg.type === 'bot' ? 4 : 3}
               sx={{
@@ -134,12 +150,17 @@ export default function ChatArea({ messages, isLoading }) {
                   />
                 </Box>
               )}
-              {msg.text && msg.type === 'bot' ? ( // Use AnimatedText for bot responses
+              {msg.text && msg.type === 'bot' ? (
                 <AnimatedText text={msg.text} />
               ) : (
                 msg.text && <Typography style={{ whiteSpace: 'pre-line' }}>{msg.text.replace(/\\n/g, '\n')}</Typography>
               )}
             </Paper>
+            {msg.type === 'error' && (
+              <IconButton onClick={() => handleRetryClick(msg)} aria-label='retry'>
+                <ReplayIcon color='error' />
+              </IconButton>
+            )}
             {msg.footnote && (
               <Box
                 mt={1}
@@ -151,9 +172,30 @@ export default function ChatArea({ messages, isLoading }) {
                   {msg.footnote.title}:
                 </Typography>
                 {msg.footnote.title === 'Generated SQL' ? (
-                  <SyntaxHighlighter language='sql' style={dracula} wrapLongLines={true}>
+                  <SyntaxHighlighter language='sql' style={syntaxStyle} wrapLongLines={true}>
                     {msg.footnote.content}
                   </SyntaxHighlighter>
+                ) : msg.footnote.title === 'Source Documents' ? (
+                  <Box display='flex' flexWrap='wrap' gap={0.5} alignItems='center'>
+                    {msg.footnote.content.slice(0, 3).map((doc, docIndex) => (
+                      <Box key={docIndex} display='inline'>
+                        <Link href={doc.gcs_link || '#'} target='_blank' rel='noopener noreferrer' color='inherit'>
+                          {doc.metadata && doc.metadata.source
+                            ? doc.metadata.source.split('/').pop()
+                            : `Document ${docIndex + 1}`}
+                        </Link>
+                        {docIndex < Math.min(3, msg.footnote.content.length) - 1 && ', '}
+                      </Box>
+                    ))}
+                    {msg.footnote.content.length > 3 && (
+                      <Link
+                        sx={{ cursor: 'pointer', marginLeft: 1 }}
+                        onClick={(event) => handleMoreClick(event, msg.footnote.content)}
+                      >
+                        More
+                      </Link>
+                    )}
+                  </Box>
                 ) : (
                   <Box display='flex' flexWrap='wrap' gap={0.5}>
                     {msg.footnote.content.map((doc, docIndex) => (
@@ -180,6 +222,38 @@ export default function ChatArea({ messages, isLoading }) {
           <TypingDots />
         </Box>
       )}
+
+      {/* Popover for More Sources */}
+      <Popover
+        id={popoverId}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'left',
+        }}
+      >
+        <List sx={{ p: 2 }}>
+          {popoverContent.map((doc, index) => (
+            <ListItem key={index} disableGutters>
+              <ListItemText
+                primary={
+                  <Link href={doc.gcs_link || '#'} target='_blank' rel='noopener noreferrer' color='inherit'>
+                    {doc.metadata && doc.metadata.source
+                      ? doc.metadata.source.split('/').pop()
+                      : `Document ${index + 1}`}
+                  </Link>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
     </Box>
   )
 }

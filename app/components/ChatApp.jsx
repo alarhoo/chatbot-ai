@@ -1,6 +1,6 @@
 // components/ChatApp.jsx
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useAppContext } from '../contexts/AppContext'
 import { Box } from '@mui/material'
 import ChatArea from './ChatArea'
@@ -19,9 +19,23 @@ export default function ChatApp() {
     }
   }, [])
 
+  const chatEndRef = useRef(null)
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [failedQuery, setFailedQuery] = useState('')
+  const [failedQueryImg, setFailedQueryImg] = useState(null)
+
   const { selectedAPI } = useAppContext()
+
+  useEffect(() => {
+    scrollToBottom() // Scroll on new render
+  }, [messages])
 
   const handleSendQuery = async (query, image) => {
     // Add user's message (with text and/or image)
@@ -65,6 +79,8 @@ export default function ChatApp() {
     } catch (error) {
       console.error('Error sending query:', error)
       setMessages((prev) => [...prev, { text: 'Error: Unable to fetch response', type: 'error' }])
+      setFailedQuery(query)
+      setFailedQueryImg(image)
     } finally {
       setIsLoading(false)
     }
@@ -74,17 +90,23 @@ export default function ChatApp() {
     setMessages([])
   }
 
+  const handleRetry = () => {
+    handleSendQuery(failedQuery, failedQueryImg)
+  }
+
   return (
     <Box display='flex' flexDirection='column' height='100%' className='chat-app'>
       <ChatArea
         className='chat-area'
         isLoading={isLoading}
         messages={messages}
+        onRetry={handleRetry}
         sx={{ flexGrow: 1, overflowY: 'auto', marginBottom: '40px' }}
       />
       <Box sx={{ position: 'sticky', bottom: 30, width: '100%' }}>
         <QueryBox onSend={handleSendQuery} isLoading={isLoading} onNewChat={clearChat} />
       </Box>
+      <div ref={chatEndRef} />
     </Box>
   )
 }

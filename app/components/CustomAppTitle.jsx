@@ -25,7 +25,7 @@ function CustomAppTitle() {
     <Stack direction='row' alignItems='center' spacing={2}>
       {/* <SmartToySharpIcon fontSize='small' color='primary' /> */}
       <Image src={currentLogo} alt='Logo' width={30} height={30} />
-      <Typography variant='h6' sx={{ fontWeight: 'bold', fontSize: 'x-large', marginTop: '5px' }}>
+      <Typography variant='h6' sx={{ fontWeight: 'bold', fontSize: 'x-large', marginTop: '5px !important' }}>
         Bolt
       </Typography>
       {/* <Chip size='small' label='BETA' color='info' /> */}

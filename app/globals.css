@@ -35,3 +35,7 @@
 .hover-glow:hover {
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.7); /* Adjust color and intensity as needed */
 }
+
+pre code {
+  white-space: pre-wrap !important;
+}
